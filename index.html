@@ -1,36 +1,36 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Berlin Driver AI — اختبار 3</title>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1425"><title>Berlin Driver AI — النسخة 4</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>body{margin:0;font:16px system-ui;background:#0b1425;color:#f4f7fb}.header{padding:18px 20px}.muted{color:#aebbd1;font-size:13px}.pill{display:inline-block;background:#213855;padding:6px 10px;border-radius:20px;font-size:12px}.wrap{max-width:820px;margin:auto}.map{height:53vh;min-height:340px;background:#1d3147;direction:ltr}.panel{padding:16px 20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#17273e;border:1px solid #31425b;border-radius:14px;padding:14px}.card strong{display:block;margin-bottom:6px}button{border:0;border-radius:10px;padding:12px 14px;background:#39b9a6;color:#06201e;font-weight:700;cursor:pointer}button.secondary{background:#253d59;color:white}.actions{position:relative;z-index:1000;display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.note{background:#192a3e;border-right:3px solid #d7b66d;padding:12px;border-radius:8px;margin-top:12px;font-size:13px}.leaflet-container{font:14px system-ui}a{color:#81d8ff}</style></head>
-<body><main class="wrap"><header class="header"><div class="pill">نسخة تجريبية • بدون بيانات طلبات أوبر المباشرة</div><h1>Berlin Driver AI 🚕</h1><div class="muted">مساعد قرار للسائق في برلين — نقارن التحرك بالبقاء في مكانك</div></header><section id="map" class="map" aria-label="خريطة برلين"></section><section class="panel"><div class="note" id="taptest" style="background:#294463;color:white">إصدار 3 — اضغط زر الموقع لاختبار الاستجابة</div><div class="actions"><button type="button" id="locate" onclick="document.getElementById('taptest').textContent='✅ الزر يستجيب — تم الضغط عليه';document.getElementById('status').textContent='تم الضغط على الزر، جارٍ محاولة تحديد الموقع…'">📍 موقعي الحالي</button><button type="button" id="reset" class="secondary" onclick="document.getElementById('taptest').textContent='✅ زر العودة يستجيب'">العودة إلى برلين</button></div><div class="grid"><div class="card"><strong>🚦 الازدحام</strong><span class="muted">ربط TomTom قيد الإعداد</span></div><div class="card"><strong>🎫 الفعاليات</strong><span class="muted">مصدر البيانات قيد الإعداد</span></div><div class="card"><strong>🧭 Smart Cruising</strong><span class="muted">الاقتراحات لم تُفعّل بعد</span></div><div class="card"><strong>💶 الربح الصافي</strong><span class="muted">سنحسبه بعد ضبط التكلفة والوقت</span></div></div><div class="note" id="status">الخريطة حقيقية، لكن لا توجد حاليًا بيانات طلبات Uber مباشرة ولا توصيات انتقال موثوقة. لن نعرض مناطق ساخنة وهمية.</div></section></main>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#0b1425;color:#f4f7fb;font:15px system-ui,-apple-system,sans-serif;line-height:1.6}.wrap{max-width:860px;margin:auto}.header{padding:20px 17px 12px}.header h1{font-size:26px;margin:8px 0 2px}.muted{color:#aebbd1;font-size:13px}.pill{display:inline-block;background:#253955;border:1px solid #38506e;border-radius:30px;padding:5px 11px;font-size:11px;color:#d8e6f8}.panel{padding:14px 16px 28px}.hero{background:linear-gradient(145deg,#1b3851,#102b34);border:1px solid #38667a;border-radius:18px;padding:18px;margin-bottom:13px}.hero h2{margin:4px 0 6px;font-size:24px}.hero p{margin:0 0 12px;color:#bfd3dc;font-size:13px}.row{display:flex;align-items:center;justify-content:space-between;gap:9px}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button{border:0;border-radius:11px;padding:11px 14px;background:#46c7b2;color:#062620;font:700 14px system-ui;cursor:pointer}button.secondary{background:#263e58;color:#f2f7ff}button:focus-visible{outline:3px solid #f3c76d;outline-offset:2px}.map{height:36vh;min-height:265px;background:#203448;direction:ltr;border-radius:16px;overflow:hidden;margin:12px 0}.heading{font-size:18px;margin:21px 0 10px}.card{background:#17273e;border:1px solid #30445e;border-radius:14px;padding:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card strong{display:block}.card p{margin:4px 0 0;color:#aebbd1;font-size:12px}.rec{display:flex;gap:12px;align-items:flex-start;margin:9px 0;padding:13px;background:#152b40;border:1px solid #34506a;border-radius:13px}.rank{display:grid;place-items:center;background:#2b5061;min-width:34px;height:34px;border-radius:10px;font-weight:800}.rec .body{flex:1}.rec strong{display:block}.rec small{display:block;color:#afc5d8;margin-top:3px}.tag{font-size:11px;background:#29465c;border-radius:20px;padding:3px 9px;white-space:nowrap}.note{background:#1b2b40;border-right:3px solid #d8b86d;padding:12px;border-radius:9px;margin-top:12px;font-size:12px;color:#e1e6ef}.section{display:none}.section.active{display:block}.tabs{display:flex;gap:7px;overflow-x:auto;padding:4px 0 10px}.tab{white-space:nowrap;background:#213550;color:#d5e3f4;font-size:12px;padding:9px 12px}.tab.active{background:#46c7b2;color:#062620}.empty{padding:16px;background:#14283b;border:1px dashed #4d617a;border-radius:12px;color:#bac9dc}.status{margin:10px 0}.leaflet-container{font:13px system-ui}a{color:#80d6ff}@media(min-width:700px){.map{height:390px}.header{padding-top:30px}} 
+</style></head><body><main class="wrap">
+<header class="header"><span class="pill">نسخة 4 • تصميم تجريبي • بدون بيانات Uber المباشرة</span><h1>🚕 Berlin Driver AI</h1><div class="muted">مساعدك الذكي لقرارات القيادة في برلين</div></header>
+<section class="panel">
+<div class="hero"><span class="pill">الميزة الرئيسية</span><h2>🧭 وين أروح الآن؟</h2><p>نقارن فرص النشاط المحتملة بتكلفة التحرك — ونحسب خيار البقاء في مكانك.</p><button id="showSuggestions">شوف أفضل 3 مناطق تجريبية ←</button></div>
+<div class="tabs" role="tablist" aria-label="أقسام التطبيق">
+<button class="tab active" data-tab="recommend" aria-selected="true">🎯 التوصيات</button><button class="tab" data-tab="cruising">🧭 القيادة الذكية</button><button class="tab" data-tab="events">🎤 الفعاليات</button><button class="tab" data-tab="airport">✈️ المطار والمحطات</button><button class="tab" data-tab="profit">💶 الربح</button><button class="tab" data-tab="alerts">🔔 التنبيهات</button></div>
+<div id="recommend" class="section active"><div class="row"><h2 class="heading">أفضل 3 مناطق — مثال فقط</h2><span class="tag">بيانات افتراضية</span></div>
+<div class="rec"><div class="rank">1</div><div class="body"><strong>Hauptbahnhof</strong><small>مثال: حركة قطارات ومسافرين قد ترفع النشاط</small><small>وقت الوصول: يُحسب بعد ربط التوجيه المروري</small></div><span class="tag">افتراضي</span></div>
+<div class="rec"><div class="rank">2</div><div class="body"><strong>Friedrichstraße</strong><small>مثال: نشاط وسط المدينة حسب الوقت واليوم</small><small>وقت الوصول: غير متاح حاليًا</small></div><span class="tag">افتراضي</span></div>
+<div class="rec"><div class="rank">3</div><div class="body"><strong>Potsdamer Platz</strong><small>مثال: فعاليات أو حركة زوار قريبة</small><small>وقت الوصول: غير متاح حاليًا</small></div><span class="tag">افتراضي</span></div>
+<div class="note"><strong>هل تتحرك أو تبقى؟</strong> لا توجد بيانات كافية الآن لاتخاذ قرار فعلي. بعد الربط، سنقارن تكلفة الوصول بكل منطقة بخيار الانتظار في موقعك، ولن نقترح انتقالًا فارغًا أطول من 10 دقائق إلا بدليل قوي على جدواه.</div></div>
+<div id="cruising" class="section"><h2 class="heading">🧭 Smart Cruising</h2><div class="empty">سيعيد تقييم موقعك واتجاهك كل 3–5 دقائق أثناء الاستخدام، ويقترح انتقالًا قصيرًا فقط إذا كانت جدواه أفضل من الانتظار. لم يتم تفعيل التوصيات الحقيقية بعد.</div></div>
+<div id="events" class="section"><h2 class="heading">🎤 رادار الفعاليات</h2><div class="empty">هنا ستظهر الفعاليات في برلين، وقت انتهائها المتوقع، وعدد الحضور إن توفر، والمسافة إليك. لم يتم ربط مصدر الفعاليات بعد.</div></div>
+<div id="airport" class="section"><h2 class="heading">✈️ المطار والمحطات</h2><div class="empty">هنا ستظهر رحلات BER القادمة وتأخيراتها وحركة القطارات والاضطرابات بعد ربط مصادر بيانات موثوقة. الوصول لا يعني بالضرورة وجود طلب Uber.</div></div>
+<div id="profit" class="section"><h2 class="heading">💶 الربح الحقيقي</h2><div class="empty">سنحسب وقت القيادة الفارغة، والمسافة، وتكلفة السيارة، ونقارن صافي العائد المحتمل بين الانتقال والبقاء. لا توجد أرقام ربح تقديرية الآن.</div></div>
+<div id="alerts" class="section"><h2 class="heading">🔔 التنبيهات الذكية</h2><div class="empty">سنضيف تنبيهات الفعاليات المنتهية قريبًا والاضطرابات وفرص النشاط المحتملة بعد تفعيل المصادر. لا توجد تنبيهات مباشرة حاليًا.</div></div>
+<h2 class="heading">🗺️ خريطة برلين وموقعك</h2><div id="map" class="map" aria-label="خريطة برلين"></div>
+<div class="actions"><button type="button" id="locate">📍 موقعي الحالي</button><button type="button" id="reset" class="secondary">العودة إلى برلين</button></div>
+<div class="note status" id="status" role="status">الخريطة حقيقية، والتوصيات أعلاه أمثلة تصميم فقط. اضغط «موقعي الحالي» لتحديد مكانك.</div>
+<div class="grid"><div class="card"><strong>🚦 حركة المرور</strong><p>ربط TomTom قيد الإعداد</p></div><div class="card"><strong>🌦️ الطقس</strong><p>الربط قيد الإعداد</p></div></div>
+</section></main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const berlin=[52.52,13.405];
-const statusEl=document.getElementById('status');
-let map=null,marker=null;
-function setStatus(msg){statusEl.textContent=msg;}
-try {
- if(typeof L==='undefined') throw new Error('تعذر تحميل مكتبة الخريطة. جرّب تحديث الصفحة أو شبكة أخرى.');
- map=L.map('map',{zoomControl:true}).setView(berlin,12);
- L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
- L.circleMarker(berlin,{radius:8,color:'#fff',weight:2,fillColor:'#39b9a6',fillOpacity:1}).addTo(map).bindPopup('وسط برلين — نقطة مرجعية وليست موقعك');
-} catch(e) {setStatus('مشكلة في تحميل الخريطة: '+e.message);}
-document.getElementById('reset').addEventListener('click',()=>{
- setStatus('تم الضغط على العودة إلى برلين.');
- if(map)map.setView(berlin,12);else setStatus('الزر يعمل، لكن مكتبة الخريطة لم تُحمّل.');
-});
-document.getElementById('locate').addEventListener('click',()=>{
- setStatus('تم الضغط على تحديد الموقع. جاري طلب إذن المتصفح…');
- if(!window.isSecureContext){setStatus('تحديد الموقع يحتاج HTTPS. افتح رابط GitHub Pages الآمن.');return;}
- if(!navigator.geolocation){setStatus('المتصفح لا يدعم تحديد الموقع أو تم تعطيله.');return;}
- navigator.geolocation.getCurrentPosition(p=>{
-  const point=[p.coords.latitude,p.coords.longitude];
-  if(map){if(marker)map.removeLayer(marker);marker=L.marker(point).addTo(map).bindPopup('موقعك الحالي').openPopup();map.setView(point,14);}
-  setStatus(map?'تم تحديد موقعك وتحريك الخريطة.':'تم تحديد موقعك لكن الخريطة لم تُحمّل. تحقق من اتصال الإنترنت.');
- },e=>{
-  const hints={1:'تم رفض إذن الموقع. فعّله من إعدادات المتصفح والنظام.',2:'تعذر الحصول على الموقع. تحقق من خدمات الموقع والواي فاي.',3:'انتهت مهلة تحديد الموقع. حاول مرة أخرى.'};
-  setStatus(hints[e.code]||('تعذر تحديد الموقع: '+e.message));
- },{enableHighAccuracy:false,timeout:20000,maximumAge:60000});
-});
+const berlin=[52.52,13.405];const statusEl=document.getElementById('status');let map=null,marker=null;
+function setStatus(msg){statusEl.textContent=msg}
+document.querySelectorAll('.tab').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>{x.classList.toggle('active',x===btn);x.setAttribute('aria-selected',String(x===btn))});document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===btn.dataset.tab))}));
+document.getElementById('showSuggestions').addEventListener('click',()=>{document.querySelector('[data-tab="recommend"]').click();document.getElementById('recommend').scrollIntoView({behavior:'smooth',block:'start'})});
+try{if(typeof L==='undefined')throw Error('تعذر تحميل مكتبة الخريطة');map=L.map('map').setView(berlin,12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);L.circleMarker(berlin,{radius:7,color:'#fff',weight:2,fillColor:'#46c7b2',fillOpacity:1}).addTo(map).bindPopup('وسط برلين — نقطة مرجعية وليست موقعك')}catch(e){setStatus('تعذر تحميل الخريطة: '+e.message)}
+document.getElementById('reset').addEventListener('click',()=>{if(map){map.setView(berlin,12);setStatus('تمت العودة إلى وسط برلين.')}else setStatus('الخريطة غير متاحة حاليًا')});
+document.getElementById('locate').addEventListener('click',()=>{setStatus('جارٍ طلب موقعك من المتصفح…');if(!window.isSecureContext){setStatus('الموقع يحتاج رابط HTTPS آمنًا');return}if(!navigator.geolocation){setStatus('المتصفح لا يدعم تحديد الموقع');return}navigator.geolocation.getCurrentPosition(p=>{const point=[p.coords.latitude,p.coords.longitude];if(map){if(marker)map.removeLayer(marker);marker=L.marker(point).addTo(map).bindPopup('موقعك الحالي').openPopup();map.setView(point,14)}setStatus(map?'تم تحديد موقعك على الخريطة.':'تم تحديد موقعك لكن الخريطة لم تُحمّل.')},e=>{const hints={1:'تم رفض إذن الموقع. فعّله من إعدادات المتصفح.',2:'تعذر الحصول على الموقع. تحقق من خدمات الموقع.',3:'انتهت مهلة تحديد الموقع. حاول مرة أخرى.'};setStatus(hints[e.code]||('تعذر تحديد الموقع: '+e.message))},{enableHighAccuracy:false,timeout:20000,maximumAge:60000})});
 </script></body></html>
