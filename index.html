@@ -5,4 +5,32 @@
 <style>body{margin:0;font:16px system-ui;background:#0b1425;color:#f4f7fb}.header{padding:18px 20px}.muted{color:#aebbd1;font-size:13px}.pill{display:inline-block;background:#213855;padding:6px 10px;border-radius:20px;font-size:12px}.wrap{max-width:820px;margin:auto}.map{height:53vh;min-height:340px;background:#1d3147;direction:ltr}.panel{padding:16px 20px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#17273e;border:1px solid #31425b;border-radius:14px;padding:14px}.card strong{display:block;margin-bottom:6px}button{border:0;border-radius:10px;padding:12px 14px;background:#39b9a6;color:#06201e;font-weight:700;cursor:pointer}button.secondary{background:#253d59;color:white}.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.note{background:#192a3e;border-right:3px solid #d7b66d;padding:12px;border-radius:8px;margin-top:12px;font-size:13px}.leaflet-container{font:14px system-ui}a{color:#81d8ff}</style></head>
 <body><main class="wrap"><header class="header"><div class="pill">نسخة تجريبية • بدون بيانات طلبات أوبر المباشرة</div><h1>Berlin Driver AI 🚕</h1><div class="muted">مساعد قرار للسائق في برلين — نقارن التحرك بالبقاء في مكانك</div></header><section id="map" class="map" aria-label="خريطة برلين"></section><section class="panel"><div class="actions"><button id="locate">📍 موقعي الحالي</button><button id="reset" class="secondary">العودة إلى برلين</button></div><div class="grid"><div class="card"><strong>🚦 الازدحام</strong><span class="muted">ربط TomTom قيد الإعداد</span></div><div class="card"><strong>🎫 الفعاليات</strong><span class="muted">مصدر البيانات قيد الإعداد</span></div><div class="card"><strong>🧭 Smart Cruising</strong><span class="muted">الاقتراحات لم تُفعّل بعد</span></div><div class="card"><strong>💶 الربح الصافي</strong><span class="muted">سنحسبه بعد ضبط التكلفة والوقت</span></div></div><div class="note" id="status">الخريطة حقيقية، لكن لا توجد حاليًا بيانات طلبات Uber مباشرة ولا توصيات انتقال موثوقة. لن نعرض مناطق ساخنة وهمية.</div></section></main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script>const berlin=[52.52,13.405];const map=L.map('map',{zoomControl:true}).setView(berlin,12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);L.circleMarker(berlin,{radius:8,color:'#fff',weight:2,fillColor:'#39b9a6',fillOpacity:1}).addTo(map).bindPopup('وسط برلين — نقطة مرجعية وليست موقعك').openPopup();let marker;document.getElementById('reset').onclick=()=>map.setView(berlin,12);document.getElementById('locate').onclick=()=>{const status=document.getElementById('status');if(!navigator.geolocation){status.textContent='متصفحك لا يدعم تحديد الموقع';return;}status.textContent='جاري طلب إذن الموقع…';navigator.geolocation.getCurrentPosition(p=>{const point=[p.coords.latitude,p.coords.longitude];if(marker)map.removeLayer(marker);marker=L.marker(point).addTo(map).bindPopup('موقعك الحالي').openPopup();map.setView(point,14);status.textContent='تم تحديد موقعك. توصيات الانتقال لم تُفعّل بعد، ولن نعتمد على تقديرات طلبات غير مؤكدة.'},e=>{status.textContent='تعذر تحديد الموقع: '+e.message},{enableHighAccuracy:true,timeout:15000})};</script></body></html>
+<script>
+const berlin=[52.52,13.405];
+const statusEl=document.getElementById('status');
+let map=null,marker=null;
+function setStatus(msg){statusEl.textContent=msg;}
+try {
+ if(typeof L==='undefined') throw new Error('تعذر تحميل مكتبة الخريطة. جرّب تحديث الصفحة أو شبكة أخرى.');
+ map=L.map('map',{zoomControl:true}).setView(berlin,12);
+ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap contributors'}).addTo(map);
+ L.circleMarker(berlin,{radius:8,color:'#fff',weight:2,fillColor:'#39b9a6',fillOpacity:1}).addTo(map).bindPopup('وسط برلين — نقطة مرجعية وليست موقعك');
+} catch(e) {setStatus('مشكلة في تحميل الخريطة: '+e.message);}
+document.getElementById('reset').addEventListener('click',()=>{
+ setStatus('تم الضغط على العودة إلى برلين.');
+ if(map)map.setView(berlin,12);else setStatus('الزر يعمل، لكن مكتبة الخريطة لم تُحمّل.');
+});
+document.getElementById('locate').addEventListener('click',()=>{
+ setStatus('تم الضغط على تحديد الموقع. جاري طلب إذن المتصفح…');
+ if(!window.isSecureContext){setStatus('تحديد الموقع يحتاج HTTPS. افتح رابط GitHub Pages الآمن.');return;}
+ if(!navigator.geolocation){setStatus('المتصفح لا يدعم تحديد الموقع أو تم تعطيله.');return;}
+ navigator.geolocation.getCurrentPosition(p=>{
+  const point=[p.coords.latitude,p.coords.longitude];
+  if(map){if(marker)map.removeLayer(marker);marker=L.marker(point).addTo(map).bindPopup('موقعك الحالي').openPopup();map.setView(point,14);}
+  setStatus(map?'تم تحديد موقعك وتحريك الخريطة.':'تم تحديد موقعك لكن الخريطة لم تُحمّل. تحقق من اتصال الإنترنت.');
+ },e=>{
+  const hints={1:'تم رفض إذن الموقع. فعّله من إعدادات المتصفح والنظام.',2:'تعذر الحصول على الموقع. تحقق من خدمات الموقع والواي فاي.',3:'انتهت مهلة تحديد الموقع. حاول مرة أخرى.'};
+  setStatus(hints[e.code]||('تعذر تحديد الموقع: '+e.message));
+ },{enableHighAccuracy:false,timeout:20000,maximumAge:60000});
+});
+</script></body></html>
